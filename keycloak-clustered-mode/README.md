@@ -8,7 +8,7 @@ The goal of this project is to deploy [`keycloak-clustered`](https://github.com/
 
 Once a cluster of docker engines in swarm mode is initialized, we can start deployng services.
 
-#### Use _manager1_ Docker Daemon
+#### 1. Use _manager1_ Docker Daemon
 ```
 eval $(docker-machine env manager1)
 ```
@@ -17,7 +17,7 @@ eval $(docker-machine env manager1)
 > eval $(docker-machine env -u)
 > ```
 
-#### Create [MySQL](https://hub.docker.com/_/mysql) service
+#### 2. Create [MySQL](https://hub.docker.com/_/mysql) service
 
 ```
 docker service create \
@@ -36,7 +36,7 @@ mysql:5.7.22
 > docker service rm keycloak-database
 > ```
 
-#### Create Keycloak service
+#### 3. Create Keycloak service
 
 **Note. Cluster hosts are not joined! [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)**
 
@@ -56,12 +56,12 @@ ivanfranchin/keycloak-clustered:latest
 > docker service rm keycloak
 > ```
 
-#### To see the status of the service run
+#### 4. See the status of the services
 ```
 docker service ls
 ```
 
-#### To check how it is getting orchestrated to the different nodes run
+#### 5. Check how the services are getting orchestrated to the different nodes
 ```
 docker service ps keycloak-mysql
 docker service ps keycloak
