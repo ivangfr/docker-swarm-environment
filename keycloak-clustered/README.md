@@ -1,4 +1,4 @@
-# docker-swarm # keycloak-clustered
+# keycloak-clustered
 
 ## Goal
 
