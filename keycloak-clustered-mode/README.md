@@ -38,7 +38,7 @@ mysql:5.7.22
 
 #### Create Keycloak service
 
-***Note. Cluster hosts are not joined together! [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)***
+**Note. Cluster hosts are not joined! [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)**
 
 ```
 docker service create \
