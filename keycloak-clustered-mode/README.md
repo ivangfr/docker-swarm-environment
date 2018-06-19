@@ -4,9 +4,13 @@
 
 The goal of this project is to deploy [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered) instances into [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial).
 
+## Note
+
+**When we have Keycloak instances running in different docker machines, they are NOT joining in the infinispan cluster. [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)**
+
 ## Deploy services to swarm
 
-Once a cluster of docker engines in swarm mode is initialized, we can start deployng services.
+Once a cluster of docker engines in swarm mode is initialized, we can start deploying services.
 
 #### 1. Use _manager1_ Docker Daemon
 ```
@@ -21,7 +25,7 @@ eval $(docker-machine env manager1)
 
 ```
 docker service create \
---name keycloak-mysql \
+--name mysql \
 --replicas 1 \
 --network my-swarm-net \
 --publish 3306:3306 \
@@ -31,14 +35,12 @@ docker service create \
 --env MYSQL_ROOT_PASSWORD=root_password \
 mysql:5.7.22
 ```
-> To remove `keycloak-database` service run
+> To remove `mysql` service run
 > ```
-> docker service rm keycloak-database
+> docker service rm mysql
 > ```
 
 #### 3. Create Keycloak service
-
-**Note. Cluster hosts are not joined! [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)**
 
 ```
 docker service create \
@@ -49,9 +51,10 @@ docker service create \
 --env KEYCLOAK_USER=admin \
 --env KEYCLOAK_PASSWORD=admin \
 --env DIST_CACHE_OWNERS=2 \
+--env JDBC_PARAMS=useSSL=false \
 ivanfranchin/keycloak-clustered:latest
 ```
-> To remove keycloak service run
+> To remove `keycloak` service run
 > ```
 > docker service rm keycloak
 > ```
@@ -63,6 +66,6 @@ docker service ls
 
 #### 5. Check how the services are getting orchestrated to the different nodes
 ```
-docker service ps keycloak-mysql
+docker service ps mysql
 docker service ps keycloak
 ```
