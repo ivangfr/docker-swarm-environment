@@ -4,13 +4,9 @@
 
 The goal of this project is to deploy [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered) instances into [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial).
 
-## Note
-
-**When we have Keycloak instances running in different docker machines, they are NOT joining in the infinispan cluster. [More about](https://www.keycloak.org/docs/latest/server_installation/index.html#troubleshooting-2)**
-
 ## Deploy services to swarm
 
-Once a cluster of docker engines in swarm mode is initialized, we can start deploying services.
+Once a cluster of docker machines in swarm mode is initialized, we can start deploying services.
 
 #### 1. Use _manager1_ Docker Daemon
 ```
@@ -40,32 +36,115 @@ mysql:5.7.22
 > docker service rm mysql
 > ```
 
-#### 3. Create Keycloak service
+#### 3. Startup Keycloak-Clustered Database
 
+- Create `keycloak-startup` service. It has just one replica and will startup the database, add `admin` user and create the `JGROUPSPING` table, that is used by `JDBC_PING` protocol to discover `keycloak-clustered` instances in the cluster. 
 ```
 docker service create \
---name keycloak \
---replicas 2 \
+--name keycloak-startup \
+--replicas 1 \
 --network my-swarm-net \
 --publish 8080:8080 \
 --env KEYCLOAK_USER=admin \
 --env KEYCLOAK_PASSWORD=admin \
 --env DIST_CACHE_OWNERS=2 \
 --env JDBC_PARAMS=useSSL=false \
-ivanfranchin/keycloak-clustered:latest
+ivanfranchin/keycloak-clustered:4.0.0.Final
 ```
-> To remove `keycloak` service run
+> **Some errors can occur in this step. See [`Troubleshooting`](#Troubleshooting) section for help.**
+
+- To see the logs of `keycloak-startup` service creation, run
+```
+docker service logs keycloak-startup -f
+```
+
+- Once `keycloak-startup` service is up and running, remove it
+```
+docker service rm keycloak-startup
+```
+
+#### 4. Create `keycloak-clustered` service
+
+- Run the following command to start `keycloak-clustered` service with one replica.
+```
+docker service create \
+--name keycloak-clustered \
+--replicas 1 \
+--network my-swarm-net \
+--publish 8080:8080 \
+--env DIST_CACHE_OWNERS=2 \
+--env JDBC_PARAMS=useSSL=false \
+ivanfranchin/keycloak-clustered:4.0.0.Final
+```
+> **Some errors can occur in this step. See [`Troubleshooting`](#Troubleshooting) section for help.**
+>
+> To remove `keycloak-clustered` service run
 > ```
-> docker service rm keycloak
+> docker service rm keycloak-clustered
 > ```
 
-#### 4. See the status of the services
+- Running the following command, you scale `keycloak-clustered` service to 3 replicas
+```
+docker service scale keycloak-clustered=3
+```
+> **Some errors can occur in this step. See [`Troubleshooting`](#Troubleshooting) section for help.**
+
+#### 5. See the status of the services
 ```
 docker service ls
 ```
+You should see something similar to
+```
+ID            NAME                MODE        REPLICAS  IMAGE                                        PORTS
+7u1r1kcd1wne  keycloak-clustered  replicated  3/3       ivanfranchin/keycloak-clustered:4.0.0.Final  *:8080->8080/tcp
+i4qh1whw9kj1  mysql               replicated  1/1       mysql:5.7.22                                 *:3306->3306/tcp
+```
 
-#### 5. Check how the services are getting orchestrated to the different nodes
+#### 6. Check how the services are getting orchestrated to the different nodes
+
+- To see about `mysql` service, run
 ```
 docker service ps mysql
-docker service ps keycloak
 ```
+You should see something like
+```
+ID            NAME     IMAGE         NODE      DESIRED STATE  CURRENT STATE           ERROR  PORTS
+tu5sqfwfwefe  mysql.1  mysql:5.7.22  manager1  Running        Running 18 minutes ago
+```
+
+- Running the command bellow shows how `keycloak-clustered` replicas are distributed over the docker swarm machines
+```
+docker service ps keycloak-clustered
+```
+You should see something similar to
+```
+ID            NAME                  IMAGE                                        NODE      DESIRED STATE  CURRENT STATE           ERROR  PORTS
+pxbw91r3wacu  keycloak-clustered.1  ivanfranchin/keycloak-clustered:4.0.0.Final  worker1   Running        Running 53 seconds ago
+fjpki4b36n5e  keycloak-clustered.2  ivanfranchin/keycloak-clustered:4.0.0.Final  worker1   Running        Running 26 seconds ago
+x20ey8uyryqa  keycloak-clustered.3  ivanfranchin/keycloak-clustered:4.0.0.Final  manager1  Running        Running 11 seconds ago
+```
+In the case above, one replica is running in `manager1` and two in `worker1`
+
+#### 7. Check records in `JGROUPSPING` table
+
+- Run `docker exec` on the `mysql` running container
+
+- Inside the container, log in `mysql`
+```
+mysql -ukeycloak -ppassword
+```
+
+- Inside `MySQL` run the following `select`
+```
+select * from keycloak.JGROUPSPING;
+```
+
+## Troubleshooting
+
+Sometimes, an exception like the one shown bellow is thrown while creating `keycloak-startup` or `keycloak-clustered` service, or scaling the last
+```
+ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] (ServerService Thread Pool -- 56)
+javax.resource.ResourceException: IJ000470: You are trying to use a connection factory that has been shut down:
+java:jboss/datasources/KeycloakDS
+```
+It happens usually when, during service creation, there are more than one replica starting up at the same time. In this case, it is recommended to create the service with just one replica and then, scale it. If there is just one replica starting up and, even so, the error occurs, it is expected the single replica will start up successfully after its first restart.

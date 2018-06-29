@@ -66,7 +66,7 @@ export MANAGER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --qui
 export WORKER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet worker)
 ```
 
-- Run the commands bellow to join to swarm `manager2` as manager node and `worker1` and `worker2` as worker nodes.
+- Run the command bellow to join to swarm `worker1` as worker node.
 ```
 docker-machine ssh worker1 docker swarm join --token $WORKER_TOKEN $MANAGER1_IP:2377
 ```
