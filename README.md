@@ -18,6 +18,13 @@ In this example, two docker machines will be created. One will act as the **Mana
 
 The setup of the cluster can be done automatically or manually.
 
+> **Clean up**  
+> To remove `manager1` and `worker1` docker machines, run
+> ```
+> docker-machine rm manager1 worker1
+> ```
+
+
 ### Automatically
 
 - Go to `docker-swarm` folder and run the following script

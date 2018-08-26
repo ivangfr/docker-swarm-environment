@@ -47,7 +47,6 @@ docker service create \
 --publish 8080:8080 \
 --env KEYCLOAK_USER=admin \
 --env KEYCLOAK_PASSWORD=admin \
---env DIST_CACHE_OWNERS=2 \
 --env JDBC_PARAMS=useSSL=false \
 ivanfranchin/keycloak-clustered:4.0.0.Final
 ```
@@ -72,7 +71,6 @@ docker service create \
 --replicas 1 \
 --network my-swarm-net \
 --publish 8080:8080 \
---env DIST_CACHE_OWNERS=2 \
 --env JDBC_PARAMS=useSSL=false \
 ivanfranchin/keycloak-clustered:4.0.0.Final
 ```
