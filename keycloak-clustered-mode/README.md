@@ -1,23 +1,22 @@
-# keycloak-clustered-mode
+# `keycloak-clustered-mode`
 
-## Goal
-
-The goal of this project is to deploy [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered) instances into [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial).
+The goal of this project is to deploy some instances of [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered)
+into [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial).
 
 ## Deploy services to swarm
 
 Once a cluster of docker machines in swarm mode is initialized, we can start deploying services.
 
-#### 1. Use _manager1_ Docker Daemon
+### Use `manager1` Docker Daemon
 ```
 eval $(docker-machine env manager1)
 ```
-> when `manager1` host won't be used anymore, you can undo this change by running
+> When `manager1` host won't be used anymore, you can undo this change by running
 > ```
 > eval $(docker-machine env -u)
 > ```
 
-#### 2. Create [MySQL](https://hub.docker.com/_/mysql) service
+### Create [MySQL](https://hub.docker.com/_/mysql) service
 
 ```
 docker service create \
@@ -36,9 +35,11 @@ mysql:5.7.22
 > docker service rm mysql
 > ```
 
-#### 3. Startup Keycloak-Clustered Database
+### Startup Keycloak-Clustered Database
 
-- Create `keycloak-startup` service. It has just one replica and will startup the database, add `admin` user and create the `JGROUPSPING` table, that is used by `JDBC_PING` protocol to discover `keycloak-clustered` instances in the cluster. 
+- Create `keycloak-startup` service. It has just one replica and will startup the database, add `admin` user and
+create the `JGROUPSPING` table, that is used by `JDBC_PING` protocol to discover `keycloak-clustered` instances in
+the cluster. 
 ```
 docker service create \
 --name keycloak-startup \
@@ -62,7 +63,7 @@ docker service logs keycloak-startup -f
 docker service rm keycloak-startup
 ```
 
-#### 4. Create `keycloak-clustered` service
+### Create `keycloak-clustered` service
 
 - Run the following command to start `keycloak-clustered` service with one replica.
 ```
@@ -87,7 +88,7 @@ docker service scale keycloak-clustered=3
 ```
 > **Some errors can occur in this step. See [`Troubleshooting`](#Troubleshooting) section for help.**
 
-#### 5. See the status of the services
+### See the status of the services
 ```
 docker service ls
 ```
@@ -98,7 +99,7 @@ ID            NAME                MODE        REPLICAS  IMAGE                   
 i4qh1whw9kj1  mysql               replicated  1/1       mysql:5.7.22                                 *:3306->3306/tcp
 ```
 
-#### 6. Check how the services are getting orchestrated to the different nodes
+### Check how the services are getting orchestrated to the different nodes
 
 - To see about `mysql` service, run
 ```
@@ -110,7 +111,7 @@ ID            NAME     IMAGE         NODE      DESIRED STATE  CURRENT STATE     
 tu5sqfwfwefe  mysql.1  mysql:5.7.22  manager1  Running        Running 18 minutes ago
 ```
 
-- Running the command bellow shows how `keycloak-clustered` replicas are distributed over the docker swarm machines
+- Running the command below shows how `keycloak-clustered` replicas are distributed over the docker swarm machines
 ```
 docker service ps keycloak-clustered
 ```
@@ -123,7 +124,7 @@ x20ey8uyryqa  keycloak-clustered.3  ivanfranchin/keycloak-clustered:4.0.0.Final 
 ```
 In the case above, one replica is running in `manager1` and two in `worker1`
 
-#### 7. Check records in `JGROUPSPING` table
+### Check records in `JGROUPSPING` table
 
 - Run `docker exec` on the `mysql` running container
 
@@ -139,10 +140,12 @@ select * from keycloak.JGROUPSPING;
 
 ## Troubleshooting
 
-Sometimes, an exception like the one shown bellow is thrown while creating `keycloak-startup` or `keycloak-clustered` service, or scaling the last
+Sometimes, an exception like the one shown below is thrown while creating `keycloak-startup` or `keycloak-clustered`
+service, or scaling the last
 ```
 ERROR [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] (ServerService Thread Pool -- 56)
 javax.resource.ResourceException: IJ000470: You are trying to use a connection factory that has been shut down:
 java:jboss/datasources/KeycloakDS
 ```
-It happens usually when, during service creation, there are more than one replica starting up at the same time. In this case, it is recommended to create the service with just one replica and then, scale it. If there is just one replica starting up and, even so, the error occurs, it is expected the single replica will start up successfully after its first restart.
+It happens usually when, during service creation, there are more than one replica starting up at the same time. In
+this case, it is recommended to create the service with just one replica and then, scale it. If there is just one replica starting up and, even so, the error occurs, it is expected the single replica will start up successfully after its first restart.

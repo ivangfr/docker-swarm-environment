@@ -1,29 +1,22 @@
-# docker-swarm-environment
+# `docker-swarm-environment`
 
-## Goal
-
-The goal of this project is have some examples using [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial)
+The goal of this project is to have some examples using [`Docker Swarm`](https://docs.docker.com/engine/swarm/swarm-tutorial)
 
 ## Examples
 
-### - [`keycloak-clustered-mode`](https://github.com/ivangfr/docker-swarm-environment/tree/master/keycloak-clustered-mode)
+### [keycloak-clustered-mode](https://github.com/ivangfr/docker-swarm-environment/tree/master/keycloak-clustered-mode)
 
-The goal of this project is to deploy [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered) instances in `Docker Swarm`.
+The goal of this project is to deploy [`keycloak-clustered`](https://github.com/ivangfr/keycloak-clustered) instances
+in `Docker Swarm`.
 
-### - More soon
+### More soon
 
 ## Initializing a cluster of docker engines in swarm mode
 
-In this example, two docker machines will be created. One will act as the **Manager (Leader)** and the another will be the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`.
+In this example, two docker machines will be created. One will act as the **Manager (Leader)** and the another will be
+the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`.
 
 The setup of the cluster can be done automatically or manually.
-
-> **Clean up**  
-> To remove `manager1` and `worker1` docker machines, run
-> ```
-> docker-machine rm manager1 worker1
-> ```
-
 
 ### Automatically
 
@@ -38,7 +31,7 @@ The setup of the cluster can be done automatically or manually.
 
 - Create a set of Docker machines that will act as nodes in our Docker Swarm.
 
-Bellow, it's the command to create a Docker Machine named `manager1`.
+Below, it's the command to create a Docker Machine named `manager1`.
 ```
 docker-machine create --driver virtualbox manager1
 ```
@@ -67,20 +60,20 @@ export MANAGER1_IP=$(docker-machine ip manager1)
 docker-machine ssh manager1 docker swarm init --advertise-addr $MANAGER1_IP
 ```
 
-- Run the commands bellow to get the join-token for manager and worker. In case you want another node to join as a worker or as a manager, you must use those tokens.
+- Run the commands below to get the join-token for manager and worker. In case you want another node to join as a worker or as a manager, you must use those tokens.
 ```
 export MANAGER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet manager)
 export WORKER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet worker)
 ```
 
-- Run the command bellow to join to swarm `worker1` as worker node.
+- Run the command below to join to swarm `worker1` as worker node.
 ```
 docker-machine ssh worker1 docker swarm join --token $WORKER_TOKEN $MANAGER1_IP:2377
 ```
 
 #### Create an overlay network
 
-- Run the command bellow the create an overlay network for swarm
+- Run the command below the create an overlay network for swarm
 ```
 docker-machine ssh manager1 docker network create --driver overlay --attachable my-swarm-net
 ```
@@ -123,5 +116,11 @@ Swarm: active
   192.168.99.100:2377
   192.168.99.101:2377
 ...
+```
 
+## Cleaning up  
+
+To remove `manager1` and `worker1` docker machines, run
+```
+docker-machine rm manager1 worker1
 ```
