@@ -3,10 +3,10 @@
 echo
 echo "Creating machines"
 echo "-----------------"
-docker-machine create --driver virtualbox manager1
-# docker-machine create --driver virtualbox manager2
-docker-machine create --driver virtualbox worker1
-# docker-machine create --driver virtualbox worker2
+docker-machine create --driver virtualbox --virtualbox-memory 8192 manager1
+# docker-machine create --driver virtualbox --virtualbox-memory 8192 manager2
+docker-machine create --driver virtualbox --virtualbox-memory 8192 worker1
+# docker-machine create --driver virtualbox --virtualbox-memory 8192 worker2
 
 echo 
 echo "Starting swarm"
