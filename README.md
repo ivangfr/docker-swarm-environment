@@ -5,9 +5,9 @@ The goal of this project is to have some examples deployed and running in cluste
 
 ## Examples
 
-### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline)
+- ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline)
 
-### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap)
+- ### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap)
 
 ## Initializing a cluster of docker engines in swarm mode
 
