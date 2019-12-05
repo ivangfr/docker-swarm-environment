@@ -1,18 +1,15 @@
 # `docker-swarm-environment`
 
-The goal of this project is to have some examples deployed and running in cluster of Docker Engines in
-[`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
+The goal of this project is to have some examples deployed and running in cluster of Docker Engines in [`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
 
 ## Examples
 
 - ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline)
-
 - ### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap)
 
 ## Initializing a cluster of docker engines in swarm mode
 
-Here, two docker machines will be created. One will act as the **Manager (Leader)** and the another will be
-the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`.
+Here, two docker machines will be created. One will act as the **Manager (Leader)** and the another will be the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`.
 
 The setup of the cluster can be done automatically or manually. All the commands below must be executed in a terminal.
 
@@ -27,8 +24,7 @@ Inside `docker-swarm` folder, run the following script
 
 #### Create Docker Machines
 
-First, create a set of Docker machines that will act as nodes in our Docker Swarm. Below, it's the command to create a
-Docker Machine named `manager1`.
+First, create a set of Docker machines that will act as nodes in our Docker Swarm. Below, it's the command to create a Docker Machine named `manager1`.
 ```
 docker-machine create --driver virtualbox --virtualbox-memory 8192 manager1
 ```
@@ -62,8 +58,7 @@ Then, run the following command to create a new swarm
 docker-machine ssh manager1 docker swarm init --advertise-addr $MANAGER1_IP
 ```
 
-Run the commands below to get the join-token for manager and worker. In case you want another node to join as a worker
-or as a manager, you must use those tokens
+Run the commands below to get the join-token for manager and worker. In case you want another node to join as a worker or as a manager, you must use those tokens
 ```
 export MANAGER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet manager)
 export WORKER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet worker)

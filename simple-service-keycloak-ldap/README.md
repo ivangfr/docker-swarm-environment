@@ -1,11 +1,9 @@
 # `docker-swarm-environment`
 ## `> simple-service-keycloak-ldap`
 
-In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in
-the repository [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap).
+In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap).
 
-So, let's start the Docker Engines cluster in swarm mode as explained
-[here](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
+So, let's start the Docker Engines cluster in swarm mode as explained [here](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
 
 ## Prerequisite
 
@@ -20,14 +18,14 @@ git clone https://github.com/ivangfr/springboot-keycloak-openldap.git
 
 ## Build simple-service docker image
 
-Instead of pushing `simple-service` docker image to Docker Registry, we will simply build it using `manager1` and
-`worker1` Docker daemons.
+Instead of pushing `simple-service` docker image to Docker Registry, we will simply build it using `manager1` and `worker1` Docker daemons.
 
 Let's start with `worker1`. Open a terminal and run
 ```
 eval $(docker-machine env worker1)
 ```
-> Note. to get back to the Docker Daemon of the Host machine run
+
+> **Note:** to get back to the Docker Daemon of the Host machine run
 > ```
 > eval $(docker-machine env -u)
 > ```
@@ -47,8 +45,7 @@ Finally, inside `springboot-keycloak-openldap` root folder run
 ./mvnw clean package dockerfile:build -DskipTests --projects simple-service
 ```
 
-Once it is finished, we can check that `simple-service` docker image was created and is present in the `manager1`
-machine, by running
+Once it is finished, we can check that `simple-service` docker image was created and is present in the `manager1` machine, by running
 ```
 docker images
 ```
@@ -60,8 +57,7 @@ Before starting, let's set the `manager1` Docker Daemon
 eval $(docker-machine env manager1)
 ```
 
-Then, let's deploy the infrastructure services. For it, inside `docker-swarm-environment/simple-service-keycloak-ldap`
-folder run. This process can take time.
+Then, let's deploy the infrastructure services. For it, inside `docker-swarm-environment/simple-service-keycloak-ldap` folder run. This process can take time.
 ```
 ./deploy-infra-services.sh
 ```
@@ -121,6 +117,7 @@ To get the URLs run
 ```
 ./get-services-urls.sh
 ```
+
 You should see something like
 ```
         Service |                                        URL |                        Credentials |
@@ -132,10 +129,7 @@ You should see something like
 
 ## Import OpenLDAP Users
 
-The `LDIF` file that we will use, `springboot-keycloak-openldap/ldap/ldap-mycompany-com.ldif`,
-contains already a pre-defined structure for `mycompany.com`. Basically, it has 2 groups (`developers` and `admin`) and
-4 users (`Bill Gates`, `Steve Jobs`, `Mark Cuban` and `Ivan Franchin`). Besides, it is defined that `Bill Gates`,
-`Steve Jobs` and `Mark Cuban` belong to `developers` group and `Ivan Franchin` belongs to `admin` group.
+The `LDIF` file that we will use, `springboot-keycloak-openldap/ldap/ldap-mycompany-com.ldif`, contains already a pre-defined structure for `mycompany.com`. Basically, it has 2 groups (`developers` and `admin`) and 4 users (`Bill Gates`, `Steve Jobs`, `Mark Cuban` and `Ivan Franchin`). Besides, it is defined that `Bill Gates`, `Steve Jobs` and `Mark Cuban` belong to `developers` group and `Ivan Franchin` belongs to `admin` group.
 ```
 Bill Gates > username: bgates, password: 123
 Steve Jobs > username: sjobs, password: 123
@@ -148,7 +142,7 @@ In order to import them, go to a terminal and inside `springboot-keycloak-openld
 ./import-openldap-users.sh $(docker-machine ip manager1)
 ```
 
-> Note. The import of the users can also be done using `phpldapadmin` website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
+> **Note:** The import of the users can also be done using `phpldapadmin` website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
 
 ## Configure Keycloak
 
@@ -157,13 +151,11 @@ In a terminal and inside `springboot-keycloak-openldap` root folder run
 ./init-keycloak.sh "$(docker-machine ip manager1):8080"
 ```
 
-This script creates `company-services` realm, `simple-service` client, `USER` client role, `ldap` federation and the
-users `bgates` and `sjobs` with the role `USER` assigned.
+This script creates `company-services` realm, `simple-service` client, `USER` client role, `ldap` federation and the users `bgates` and `sjobs` with the role `USER` assigned.
 
-`SIMPLE_SERVICE_CLIENT_SECRET` value is shown at the end of the script. It will be needed whenever we call `Keycloak`
-to get a token to access `simple-service`
+`SIMPLE_SERVICE_CLIENT_SECRET` value is shown at the end of the script. It will be needed whenever we call `Keycloak` to get a token to access `simple-service`
 
-> Note. The `Keycloak` configuration can also be done using its website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
+> **Note:** The `Keycloak` configuration can also be done using its website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
 
 ## Test
 
@@ -178,6 +170,7 @@ to get a token to access `simple-service`
    ```
    curl -i http://$MANAGER1_IP:9080/api/public
    ```
+   
    It will return
    ```
    HTTP/1.1 200
@@ -188,6 +181,7 @@ to get a token to access `simple-service`
    ``` 
    curl -i http://$MANAGER1_IP:9080/api/private
    ```
+   
    It will return
    ```
    HTTP/1.1 302
@@ -222,6 +216,7 @@ to get a token to access `simple-service`
    ```
    curl -i -H "Authorization: Bearer $BGATES_ACCESS_TOKEN" http://$MANAGER1_IP:9080/api/private
    ```
+   
    It will return
    ```
    HTTP/1.1 200

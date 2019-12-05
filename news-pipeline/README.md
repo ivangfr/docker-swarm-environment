@@ -1,8 +1,7 @@
 # `docker-swarm-environment`
 ## `> news-pipeline`
 
-In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in
-the repository [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
+In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
 
 So, let's start the Docker Engines cluster in swarm mode as explained [here](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
 
@@ -15,14 +14,14 @@ git clone https://github.com/ivangfr/spring-cloud-stream-elasticsearch.git
 
 ## Build Docker Images
 
-Instead of pushing the applications docker images to Docker Registry, we will simply build them using `manager1` and
-`worker1` Docker daemons.
+Instead of pushing the applications docker images to Docker Registry, we will simply build them using `manager1` and `worker1` Docker daemons.
 
 Let's start with `worker1`. Open a terminal and run
 ```
 eval $(docker-machine env worker1)
 ```
-> Note. to get back to the Docker Daemon of the Host machine run
+
+> **Note:** to get back to the Docker Daemon of the Host machine run
 > ```
 > eval $(docker-machine env -u)
 > ```
@@ -42,8 +41,7 @@ Finally, inside `spring-cloud-stream-elasticsearch` root folder run
 ./build-apps.sh
 ```
 
-Once it is finished, we can check that all docker images were created and are present in the `manager1` machine, by
-running
+Once it is finished, we can check that all docker images were created and are present in the `manager1` machine, by running
 ```
 docker images
 ```
@@ -120,6 +118,7 @@ To get the URLs run
 ```
 ./get-services-urls.sh
 ```
+
 You should see something like
 ```
        Service |                                        URL |
