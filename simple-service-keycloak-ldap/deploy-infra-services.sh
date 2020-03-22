@@ -26,7 +26,7 @@ docker service create \
 --env MYSQL_USER=keycloak \
 --env MYSQL_PASSWORD=password \
 --env MYSQL_ROOT_PASSWORD=root_password \
-mysql:5.7.28
+mysql:5.7.29
 
 docker service create \
 --name keycloak \
@@ -42,4 +42,4 @@ docker service create \
 --env JDBC_PARAMS=useSSL=false \
 --env JGROUPS_DISCOVERY_PROTOCOL=JDBC_PING \
 --env JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name=java:jboss/datasources/KeycloakDS \
-ivanfranchin/keycloak-clustered:6.0.1
+ivanfranchin/keycloak-clustered:latest

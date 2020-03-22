@@ -2,6 +2,10 @@
 
 The goal of this project is to have some examples deployed and running in cluster of Docker Engines in [`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
 
+## Prerequisite
+
+You must have [`docker-machine`](https://docs.docker.com/machine/overview/) installed in your machine
+
 ## Examples
 
 - ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline)

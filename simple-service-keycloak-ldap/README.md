@@ -24,7 +24,6 @@ Let's start with `worker1`. Open a terminal and run
 ```
 eval $(docker-machine env worker1)
 ```
-
 > **Note:** to get back to the Docker Daemon of the Host machine run
 > ```
 > eval $(docker-machine env -u)
@@ -69,11 +68,11 @@ docker service ls
 
 It will prompt something like
 ```
-ID                  NAME                   MODE                REPLICAS            IMAGE                                   PORTS
-uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:6.0.1   *:8080->8080/tcp
-wkmhvb6ha020        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                   *:389->389/tcp
-9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.28                            *:3306->3306/tcp
-y4h2sv0ct540        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0               *:6443->443/tcp
+ID                  NAME                   MODE                REPLICAS            IMAGE                                    PORTS
+uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:latest   *:8080->8080/tcp
+wkmhvb6ha020        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                    *:389->389/tcp
+9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.29                             *:3306->3306/tcp
+y4h2sv0ct540        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                *:6443->443/tcp
 ```
 
 Once all infrastructure services are up and running, let's deploy `simple-service` application
@@ -94,9 +93,9 @@ docker service ls
 You should see something like
 ```
 ID                  NAME                   MODE                REPLICAS            IMAGE                                       PORTS
-uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:6.0.1       *:8080->8080/tcp
+uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:latest      *:8080->8080/tcp
 wkmhvb6ha020        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
-9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.28                                *:3306->3306/tcp
+9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.29                                *:3306->3306/tcp
 y4h2sv0ct540        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
 2o2iw2m5vzps        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
 ```
@@ -161,6 +160,11 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
 
 1. Open a new terminal
 
+1. Set the `manager1` Docker Daemon
+   ```
+   eval $(docker-machine env manager1)
+   ```
+
 1. Run the following command to get the `manager` ip
    ```
    MANAGER1_IP=$(docker-machine ip manager1)
@@ -198,7 +202,7 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
    KEYCLOAK_CONTAINER=$(docker ps --format {{.Names}} | grep keycloak)
    ```
 
-1. Run the command below to get an access token for `bgates` user
+1. Run the commands below to get an access token for `bgates` user
    ```
    BGATES_ACCESS_TOKEN=$(
      docker exec -t -e CLIENT_SECRET=$SIMPLE_SERVICE_CLIENT_SECRET $KEYCLOAK_CONTAINER bash -c '
@@ -209,7 +213,9 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
        -d "password=123" \
        -d "grant_type=password" \
        -d "client_secret=$CLIENT_SECRET" \
-       -d "client_id=simple-service" | jq -r .access_token ')
+       -d "client_id=simple-service"')
+   
+   BGATES_ACCESS_TOKEN=$(echo $BGATES_TOKEN | jq -r .access_token)
    ```
 
 1. Call the endpoint `GET /api/private`
@@ -225,8 +231,13 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
 
 ## Shutdown
 
-Run the following scripts
-```
-./remove-app.sh
-./remove-infra-services.sh
-```
+- In a terminal, set the `manager1` Docker Daemon
+  ```
+  eval $(docker-machine env manager1)
+  ```
+
+- Run the following scripts
+  ```
+  ./remove-app.sh
+  ./remove-infra-services.sh
+  ```
