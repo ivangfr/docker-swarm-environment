@@ -204,7 +204,7 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
 
 1. Run the commands below to get an access token for `bgates` user
    ```
-   BGATES_ACCESS_TOKEN=$(
+   BGATES_TOKEN=$(
      docker exec -t -e CLIENT_SECRET=$SIMPLE_SERVICE_CLIENT_SECRET $KEYCLOAK_CONTAINER bash -c '
        curl -s -X POST \
        http://keycloak:8080/auth/realms/company-services/protocol/openid-connect/token \
