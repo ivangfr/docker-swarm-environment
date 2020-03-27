@@ -6,7 +6,7 @@ docker service create \
 --network my-swarm-net \
 --publish 2181:2181 \
 --env ZOOKEEPER_CLIENT_PORT=2181 \
-confluentinc/cp-zookeeper:5.3.1
+confluentinc/cp-zookeeper:5.4.1
 
 docker service create \
 --name kafka \
@@ -18,7 +18,7 @@ docker service create \
 --env KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092 \
 --env KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
 --env KAFKA_DELETE_TOPIC_ENABLE="true" \
-confluentinc/cp-kafka:5.3.1
+confluentinc/cp-kafka:5.4.1
 
 docker service create \
 --name elasticsearch \
@@ -37,4 +37,4 @@ docker service create \
 --replicas 1 \
 --network my-swarm-net \
 --publish 9411:9411 \
-openzipkin/zipkin:2.18.0
+openzipkin/zipkin:2.20.2

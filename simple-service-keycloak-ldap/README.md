@@ -20,147 +20,158 @@ git clone https://github.com/ivangfr/springboot-keycloak-openldap.git
 
 Instead of pushing `simple-service` docker image to Docker Registry, we will simply build it using `manager1` and `worker1` Docker daemons.
 
-Let's start with `worker1`. Open a terminal and run
-```
-eval $(docker-machine env worker1)
-```
-> **Note:** to get back to the Docker Daemon of the Host machine run
-> ```
-> eval $(docker-machine env -u)
-> ```
+- In a terminal, navigate to `springboot-keycloak-openldap` root folder
 
-Then, inside `springboot-keycloak-openldap` root folder run
-```
-./mvnw clean package dockerfile:build -DskipTests --projects simple-service
-```
+- Access `worker1` Docker Daemon
+  ```
+  eval $(docker-machine env worker1)
+  ```
 
-Let's do the same for the `manager1`
-```
-eval $(docker-machine env manager1)
-```
+- Build `simple-service` docker image
+  ```
+  ./mvnw clean package dockerfile:build -DskipTests --projects simple-service
+  ```
 
-Finally, inside `springboot-keycloak-openldap` root folder run
-```
-./mvnw clean package dockerfile:build -DskipTests --projects simple-service
-```
+- Access `manager1` Docker Daemon
+  ```
+  eval $(docker-machine env manager1)
+  ```
+   
+- Build again `simple-service` docker image
+  ```
+  ./mvnw clean package dockerfile:build -DskipTests --projects simple-service
+  ```
 
-Once it is finished, we can check that `simple-service` docker image was created and is present in the `manager1` machine, by running
-```
-docker images
-```
+- Get back to Host machine Docker Daemon
+  ```
+  eval $(docker-machine env -u)
+  ```
 
 ## Deploy Example
 
-Before starting, let's set the `manager1` Docker Daemon
-```
-eval $(docker-machine env manager1)
-```
+- In a terminal, navigate to `docker-swarm-environment/simple-service-keycloak-ldap` folder
 
-Then, let's deploy the infrastructure services. For it, inside `docker-swarm-environment/simple-service-keycloak-ldap` folder run. This process can take time.
-```
-./deploy-infra-services.sh
-```
+- Access `manager1` Docker Daemon
+  ```
+  eval $(docker-machine env manager1)
+  ```
+   
+- Deploy the infrastructure services
+  ```
+  ./deploy-infra-services.sh
+  ```
 
-We can list the status of the infrastructure services by running
-```
-docker service ls
-```
+  We can list the status of the infrastructure services by running
+  ```
+  docker service ls
+  ```
 
-It will prompt something like
-```
-ID                  NAME                   MODE                REPLICAS            IMAGE                                    PORTS
-uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:latest   *:8080->8080/tcp
-wkmhvb6ha020        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                    *:389->389/tcp
-9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.29                             *:3306->3306/tcp
-y4h2sv0ct540        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                *:6443->443/tcp
-```
+  It will prompt something like
+  ```
+  ID                  NAME                   MODE                REPLICAS            IMAGE                                   PORTS
+  iw0maoe363ud        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:9.0.2   *:8080->8080/tcp
+  y2vq7bug0ydf        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                   *:389->389/tcp
+  7qyj8sohfmq9        mysql                  replicated          1/1                 mysql:5.7.29                            *:3306->3306/tcp
+  uame0f4pd90g        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0               *:6443->443/tcp                             
+  ```
 
-Once all infrastructure services are up and running, let's deploy `simple-service` application
-```
-./deploy-app.sh
-```
+- Once all infrastructure services are up and running, let's deploy `simple-service` application
+  ```
+  ./deploy-app.sh
+  ```
 
-In order to see the `simple-service` initialization logs
-```
-docker service logs simple-service -f
-```
+  To list the status of the infrastructure services and `simple-service` application run
+  ```
+  docker service ls
+  ```
+   
+  You should see something like
+  ```
+  ID                  NAME                   MODE                REPLICAS            IMAGE                                       PORTS
+  iw0maoe363ud        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:9.0.2       *:8080->8080/tcp
+  y2vq7bug0ydf        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
+  7qyj8sohfmq9        mysql                  replicated          1/1                 mysql:5.7.29                                *:3306->3306/tcp
+  uame0f4pd90g        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
+  mr6ua1prrhrw        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
+  ```
 
-To list the status of the infrastructure services and `simple-service` application run
-```
-docker service ls
-```
+- \[Optional\] In order to see the `simple-service` initialization logs
+  ```
+  docker service logs simple-service
+  ```
 
-You should see something like
-```
-ID                  NAME                   MODE                REPLICAS            IMAGE                                       PORTS
-uf2sdfb2huex        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:latest      *:8080->8080/tcp
-wkmhvb6ha020        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
-9lnmd2qezhyw        mysql                  replicated          1/1                 mysql:5.7.29                                *:3306->3306/tcp
-y4h2sv0ct540        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
-2o2iw2m5vzps        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
-```
+- \[Optional\] To check more information about specific service, for example `keycloak`, run
+  ```
+  docker service ps keycloak
+  ```
 
-To check more information about specific service, for example `keycloak`, run
-```
-docker service ps keycloak
-```
+- \[Optional\] To scale the `simple-service` service to 2 replicas, run
+  ```
+  docker service scale simple-service=2
+  ```
 
-To scale the `simple-service` service to 2 replicas, run
-```
-docker service scale simple-service=2
-```
+- Get back to Host machine Docker Daemon
+  ```
+  eval $(docker-machine env -u)
+  ```
 
 ## Application & Services URLs
 
-To get the URLs run
-```
-./get-services-urls.sh
-```
+- In a terminal, make sure you are inside `docker-swarm-environment/simple-service-keycloak-ldap` folder
 
-You should see something like
-```
-        Service |                                        URL |                        Credentials |
---------------- + ------------------------------------------ + ---------------------------------- |
- simple-service | http://192.168.99.114:9080/swagger-ui.html |                                    |
-       keycloak |                 http://192.168.99.114:8080 |                        admin/admin |
-   phpldapadmin |                https://192.168.99.114:6443 | cn=admin,dc=mycompany,dc=com/admin |
-```
+- Run the script below to get the services URLs
+  ```
+  ./get-services-urls.sh
+  ```
+
+  You should see something like
+  ```
+          Service |                                        URL |                        Credentials |
+  --------------- + ------------------------------------------ + ---------------------------------- |
+   simple-service | http://192.168.99.114:9080/swagger-ui.html |                                    |
+         keycloak |                 http://192.168.99.114:8080 |                        admin/admin |
+     phpldapadmin |                https://192.168.99.114:6443 | cn=admin,dc=mycompany,dc=com/admin |
+  ```
 
 ## Import OpenLDAP Users
 
-The `LDIF` file that we will use, `springboot-keycloak-openldap/ldap/ldap-mycompany-com.ldif`, contains already a pre-defined structure for `mycompany.com`. Basically, it has 2 groups (`developers` and `admin`) and 4 users (`Bill Gates`, `Steve Jobs`, `Mark Cuban` and `Ivan Franchin`). Besides, it is defined that `Bill Gates`, `Steve Jobs` and `Mark Cuban` belong to `developers` group and `Ivan Franchin` belongs to `admin` group.
-```
-Bill Gates > username: bgates, password: 123
-Steve Jobs > username: sjobs, password: 123
-Mark Cuban > username: mcuban, password: 123
-Ivan Franchin > username: ifranchin, password: 123
-```
+> The `LDIF` file that we will use, `springboot-keycloak-openldap/ldap/ldap-mycompany-com.ldif`, contains already a pre-defined structure for `mycompany.com`. Basically, it has 2 groups (`developers` and `admin`) and 4 users (`Bill Gates`, `Steve Jobs`, `Mark Cuban` and `Ivan Franchin`). Besides, it is defined that `Bill Gates`, `Steve Jobs` and `Mark Cuban` belong to `developers` group and `Ivan Franchin` belongs to `admin` group.
+> ```
+> Bill Gates > username: bgates, password: 123
+> Steve Jobs > username: sjobs, password: 123
+> Mark Cuban > username: mcuban, password: 123
+> Ivan Franchin > username: ifranchin, password: 123
+> ```
 
-In order to import them, go to a terminal and inside `springboot-keycloak-openldap` root folder, run
-```
-./import-openldap-users.sh $(docker-machine ip manager1)
-```
+- In a terminal, navigate to `springboot-keycloak-openldap` root folder
 
-> **Note:** The import of the users can also be done using `phpldapadmin` website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
+- Run the following script
+  ```
+  ./import-openldap-users.sh $(docker-machine ip manager1)
+  ```
+
+> **Note:** The import of the users can also be done using `phpldapadmin` website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
 
 ## Configure Keycloak
 
-In a terminal and inside `springboot-keycloak-openldap` root folder run
-```
-./init-keycloak.sh "$(docker-machine ip manager1):8080"
-```
+- In a terminal, navigate to `springboot-keycloak-openldap` root folder
 
-This script creates `company-services` realm, `simple-service` client, `USER` client role, `ldap` federation and the users `bgates` and `sjobs` with the role `USER` assigned.
+- Run the script below to configure `Keycloak` for `simple-service` application
+  ```
+  ./init-keycloak.sh "$(docker-machine ip manager1):8080"
+  ```
 
-`SIMPLE_SERVICE_CLIENT_SECRET` value is shown at the end of the script. It will be needed whenever we call `Keycloak` to get a token to access `simple-service`
+  This script creates `company-services` realm, `simple-service` client, `USER` client role, `ldap` federation and the users `bgates` and `sjobs` with the role `USER` assigned.
 
-> **Note:** The `Keycloak` configuration can also be done using its website as explained [here](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
+- Copy `SIMPLE_SERVICE_CLIENT_SECRET` value that is shown at the end of the script. It will be needed whenever we call `Keycloak` to get a token to access `simple-service`
+
+> **Note:** The `Keycloak` configuration can also be done using its website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
 
 ## Test
 
 1. Open a new terminal
 
-1. Set the `manager1` Docker Daemon
+1. Set `manager1` Docker Daemon
    ```
    eval $(docker-machine env manager1)
    ```
@@ -217,6 +228,10 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
    
    BGATES_ACCESS_TOKEN=$(echo $BGATES_TOKEN | jq -r .access_token)
    ```
+   > To check BGATES_ACCESS_TOKEN value run
+   > ```
+   > echo $BGATES_ACCESS_TOKEN
+   > ```
 
 1. Call the endpoint `GET /api/private`
    ```
@@ -228,16 +243,27 @@ This script creates `company-services` realm, `simple-service` client, `USER` cl
    HTTP/1.1 200
    bgates, it is private.
    ```
+   
+1. Get back to Host machine Docker Daemon
+   ```
+   eval $(docker-machine env -u)
+   ```
 
 ## Shutdown
 
-- In a terminal, set the `manager1` Docker Daemon
+- In a terminal, make sure you are inside `docker-swarm-environment/simple-service-keycloak-ldap` folder
+
+- Set `manager1` Docker Daemon
   ```
   eval $(docker-machine env manager1)
   ```
 
 - Run the following scripts
   ```
-  ./remove-app.sh
-  ./remove-infra-services.sh
+  ./remove-app.sh && ./remove-infra-services.sh
+  ```
+  
+- Get back to Host machine Docker Daemon
+  ```
+  eval $(docker-machine env -u)
   ```

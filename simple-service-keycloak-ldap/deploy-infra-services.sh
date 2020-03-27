@@ -42,4 +42,4 @@ docker service create \
 --env JDBC_PARAMS=useSSL=false \
 --env JGROUPS_DISCOVERY_PROTOCOL=JDBC_PING \
 --env JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name=java:jboss/datasources/KeycloakDS \
-ivanfranchin/keycloak-clustered:latest
+ivanfranchin/keycloak-clustered:9.0.2
