@@ -1,4 +1,4 @@
-# `docker-swarm-environment`
+# docker-swarm-environment
 
 The goal of this project is to have some examples deployed and running in cluster of Docker Engines in [`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
 
@@ -8,8 +8,8 @@ You must have [`docker-machine`](https://docs.docker.com/machine/overview/) inst
 
 ## Examples
 
-- ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline)
-- ### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap)
+- ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline#docker-swarm-environment)
+- ### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap#docker-swarm-environment)
 
 ## Initializing a cluster of docker engines in swarm mode
 
@@ -28,21 +28,21 @@ The setup of the cluster can be done automatically or manually. All the commands
 
 ### Manually
 
-- Open a terminal
+Open a terminal and follow the steps below
 
 - **Create Docker Machines**
 
-  - Run the command to create a Docker Machine named `manager1`.
+  - Run the command to create `manager1` Docker Machine
     ```
     docker-machine create --driver virtualbox --virtualbox-memory 8192 manager1
     ```
 
-  - Run the command to create Docker Machine for `worker1`.
+  - Run the command to create `worker1` Docker Machine
     ```
     docker-machine create --driver virtualbox --virtualbox-memory 8192 worker1
     ```
 
-  - In order to check the status of all the Docker machines, run
+  - Check the status of all the Docker machines
     ```
     docker-machine ls
     ```
@@ -61,25 +61,23 @@ The setup of the cluster can be done automatically or manually. All the commands
     export MANAGER1_IP=$(docker-machine ip manager1)
     ```
 
-  - Run the following command to create a new swarm
+  - Create a new swarm
     ```
     docker-machine ssh manager1 docker swarm init --advertise-addr $MANAGER1_IP
     ```
 
-  - Run the commands below to get the join-token for manager and worker. In case you want another node to join as a worker or as a manager, you must use those tokens
+  - Get the `join-token` for manager and worker. In case you want another node to join as a worker or as a manager, you must use those tokens
     ```
     export MANAGER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet manager)
     export WORKER_TOKEN=$(docker-machine ssh manager1 docker swarm join-token --quiet worker)
     ```
 
-  - Finally, run the following command to join to swarm `worker1` as worker node.
+  - Join to swarm `worker1` as worker node.
     ```
     docker-machine ssh worker1 docker swarm join --token $WORKER_TOKEN $MANAGER1_IP:2377
     ```
 
 - **Create an overlay network**
-
-  Run the command below the create an overlay network for swarm
   ```
   docker-machine ssh manager1 docker network create --driver overlay --attachable my-swarm-net
   ```
@@ -182,9 +180,7 @@ The setup of the cluster can be done automatically or manually. All the commands
 
 ## Cleaning up  
 
-- Open a terminal
-
-- To remove `manager1` and `worker1` docker machines, run
-  ```
-  docker-machine rm worker1 manager1
-  ```
+In a terminal, run the command below o remove `manager1` and `worker1` docker machines
+```
+docker-machine rm worker1 manager1
+```

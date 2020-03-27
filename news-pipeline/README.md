@@ -1,9 +1,9 @@
-# `docker-swarm-environment`
-## `> news-pipeline`
+# docker-swarm-environment
+## `>` news-pipeline
 
 In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
 
-So, let's start the Docker Engines cluster in swarm mode as explained [here](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
+So, let's start the Docker Engines cluster in swarm mode as explained in the main [README](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
 
 ## Clone repository
 
@@ -158,7 +158,7 @@ Instead of pushing the applications docker images to Docker Registry, we will si
   
 ## Issues
 
-- It seems that there is some problem with Feign or Eureka because `news-client` is trying to request `publisher-api` (http://publisher-api/api/news?sort=datetime%2Cdesc) and it's failing.
+- It seems that there is some problem with Feign or Eureka because `news-client` is trying to make a request to `publisher-api` (`http://publisher-api/api/news?sort=datetime%2Cdesc`) and it's failing.
   ```
   news-client.1.w0yk93k04xvh@worker1    | 2020-03-27 16:03:03.321 ERROR [news-client,15871894559932e6,15871894559932e6,true] 1 --- [nio-8080-exec-4] o.s.c.s.i.web.ExceptionLoggingFilter     : Uncaught exception thrown
   news-client.1.w0yk93k04xvh@worker1    |
