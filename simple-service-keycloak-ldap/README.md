@@ -1,5 +1,5 @@
 # docker-swarm-environment
-## `>` simple-service-keycloak-ldap
+## `> simple-service-keycloak-ldap`
 
 In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap).
 

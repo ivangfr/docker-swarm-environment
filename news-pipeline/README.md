@@ -1,5 +1,5 @@
 # docker-swarm-environment
-## `>` news-pipeline
+## `> news-pipeline
 
 In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
 
