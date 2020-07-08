@@ -3,18 +3,19 @@
 
 In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap).
 
-So, let's start the Docker Engines cluster in swarm mode as explained in the main [README](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
-
-## Prerequisite
-
-In order to run some commands/scripts, you must have [`jq`](https://stedolan.github.io/jq) installed on you machine
+So, let's start a Docker Engines cluster in swarm mode as explained in the main [README](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
 
 ## Clone repository
 
-Clone [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap) repository
+In a terminal, run the following command to clone [`springboot-keycloak-openldap`](https://github.com/ivangfr/springboot-keycloak-openldap) repository
 ```
 git clone https://github.com/ivangfr/springboot-keycloak-openldap.git
 ```
+
+## Prerequisite
+
+- [`Java 11+`](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- [`jq`](https://stedolan.github.io/jq)
 
 ## Build simple-service docker image
 
@@ -29,7 +30,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 
 - Build `simple-service` docker image
   ```
-  ./mvnw clean package dockerfile:build -DskipTests --projects simple-service
+  ./mvnw clean compile jib:dockerBuild --projects simple-service
   ```
 
 - Access `manager1` Docker Daemon
@@ -39,7 +40,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
    
 - Build again `simple-service` docker image
   ```
-  ./mvnw clean package dockerfile:build -DskipTests --projects simple-service
+  ./mvnw clean compile jib:dockerBuild --projects simple-service
   ```
 
 - Get back to Host machine Docker Daemon
@@ -68,11 +69,11 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 
   It will prompt something like
   ```
-  ID                  NAME                   MODE                REPLICAS            IMAGE                                   PORTS
-  iw0maoe363ud        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:9.0.2   *:8080->8080/tcp
-  y2vq7bug0ydf        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                   *:389->389/tcp
-  7qyj8sohfmq9        mysql                  replicated          1/1                 mysql:5.7.29                            *:3306->3306/tcp
-  uame0f4pd90g        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0               *:6443->443/tcp                             
+  ID                  NAME                   MODE                REPLICAS            IMAGE                                    PORTS
+  vfyq79g15htf        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:10.0.2   *:8080->8080/tcp
+  it87nfuo7jd8        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                    *:389->389/tcp
+  tinqjr9fwjn5        mysql                  replicated          1/1                 mysql:5.7.30                             *:3306->3306/tcp
+  qil9rhadw94k        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                *:6443->443/tcp
   ```
 
 - Once all infrastructure services are up and running, let's deploy `simple-service` application
@@ -88,11 +89,11 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
   You should see something like
   ```
   ID                  NAME                   MODE                REPLICAS            IMAGE                                       PORTS
-  iw0maoe363ud        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:9.0.2       *:8080->8080/tcp
-  y2vq7bug0ydf        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
-  7qyj8sohfmq9        mysql                  replicated          1/1                 mysql:5.7.29                                *:3306->3306/tcp
-  uame0f4pd90g        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
-  mr6ua1prrhrw        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
+  vfyq79g15htf        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:10.0.2      *:8080->8080/tcp
+  it87nfuo7jd8        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
+  tinqjr9fwjn5        mysql                  replicated          1/1                 mysql:5.7.30                                *:3306->3306/tcp
+  qil9rhadw94k        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
+  41xn7k500sti        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
   ```
 
 - \[Optional\] In order to see the `simple-service` initialization logs
@@ -126,11 +127,11 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 
   You should see something like
   ```
-          Service |                                        URL |                        Credentials |
-  --------------- + ------------------------------------------ + ---------------------------------- |
-   simple-service | http://192.168.99.114:9080/swagger-ui.html |                                    |
-         keycloak |                 http://192.168.99.114:8080 |                        admin/admin |
-     phpldapadmin |                https://192.168.99.114:6443 | cn=admin,dc=mycompany,dc=com/admin |
+          Service |                                       URL |                        Credentials |
+  --------------- + ----------------------------------------- + ---------------------------------- |
+   simple-service | http://<manager1-ip>:9080/swagger-ui.html |                                    |
+         keycloak |                 http://<manager1-ip>:8080 |                        admin/admin |
+     phpldapadmin |                https://<manager1-ip>:6443 | cn=admin,dc=mycompany,dc=com/admin |
   ```
 
 ## Import OpenLDAP Users
@@ -143,7 +144,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 > Ivan Franchin > username: ifranchin, password: 123
 > ```
 
-- In a terminal, navigate to `springboot-keycloak-openldap` root folder
+- In a terminal, make sure you are in `springboot-keycloak-openldap` root folder
 
 - Run the following script
   ```
@@ -154,7 +155,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 
 ## Configure Keycloak
 
-- In a terminal, navigate to `springboot-keycloak-openldap` root folder
+- In a terminal, make sure you are in `springboot-keycloak-openldap` root folder
 
 - Run the script below to configure `Keycloak` for `simple-service` application
   ```
@@ -186,7 +187,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
    curl -i http://$MANAGER1_IP:9080/api/public
    ```
    
-   It will return
+   It should return
    ```
    HTTP/1.1 200
    It is public.
@@ -197,7 +198,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
    curl -i http://$MANAGER1_IP:9080/api/private
    ```
    
-   It will return
+   It should return
    ```
    HTTP/1.1 302
    ```
@@ -228,17 +229,18 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
    
    BGATES_ACCESS_TOKEN=$(echo $BGATES_TOKEN | jq -r .access_token)
    ```
-   > To check BGATES_ACCESS_TOKEN value run
-   > ```
-   > echo $BGATES_ACCESS_TOKEN
-   > ```
+   
+   To check `BGATES_ACCESS_TOKEN` value run
+   ```
+   echo $BGATES_ACCESS_TOKEN
+   ```
 
 1. Call the endpoint `GET /api/private`
    ```
    curl -i -H "Authorization: Bearer $BGATES_ACCESS_TOKEN" http://$MANAGER1_IP:9080/api/private
    ```
    
-   It will return
+   It should return
    ```
    HTTP/1.1 200
    bgates, it is private.

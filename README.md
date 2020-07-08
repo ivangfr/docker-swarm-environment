@@ -1,15 +1,16 @@
 # docker-swarm-environment
 
-The goal of this project is to have some examples deployed and running in cluster of Docker Engines in [`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
-
-## Prerequisite
-
-You must have [`docker-machine`](https://docs.docker.com/machine/overview/) installed in your machine
+The goal of this project is to have some examples deployed and running in a cluster of Docker Engines in [`swarm mode`](https://docs.docker.com/engine/swarm/swarm-tutorial)
 
 ## Examples
 
 - ### [news-pipeline](https://github.com/ivangfr/docker-swarm-environment/tree/master/news-pipeline#docker-swarm-environment)
 - ### [simple-service-keycloak-ldap](https://github.com/ivangfr/docker-swarm-environment/tree/master/simple-service-keycloak-ldap#docker-swarm-environment)
+
+## Prerequisite
+
+- [`Docker`](https://www.docker.com/)
+- [`docker-machine`](https://docs.docker.com/machine/overview/)
 
 ## Initializing a cluster of docker engines in swarm mode
 

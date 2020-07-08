@@ -15,6 +15,7 @@ docker service create \
 --restart-condition="on-failure" \
 --env KAFKA_HOST=kafka \
 --env KAFKA_PORT=9092 \
+--env SCHEMA_REGISTRY_HOST=schema-registry \
 --env EUREKA_HOST=eureka \
 --env ZIPKIN_HOST=zipkin \
 docker.mycompany.com/producer-api:1.0.0
@@ -27,6 +28,7 @@ docker service create \
 --restart-condition="on-failure" \
 --env KAFKA_HOST=kafka \
 --env KAFKA_PORT=9092 \
+--env SCHEMA_REGISTRY_HOST=schema-registry \
 --env EUREKA_HOST=eureka \
 --env ZIPKIN_HOST=zipkin \
 docker.mycompany.com/categorizer-service:1.0.0
@@ -39,6 +41,7 @@ docker service create \
 --restart-condition="on-failure" \
 --env KAFKA_HOST=kafka \
 --env KAFKA_PORT=9092 \
+--env SCHEMA_REGISTRY_HOST=schema-registry \
 --env ELASTICSEARCH_HOST=elasticsearch \
 --env EUREKA_HOST=eureka -e ZIPKIN_HOST=zipkin \
 docker.mycompany.com/collector-service:1.0.0
@@ -62,6 +65,7 @@ docker service create \
 --restart-condition="on-failure" \
 --env KAFKA_HOST=kafka \
 --env KAFKA_PORT=9092 \
+--env SCHEMA_REGISTRY_HOST=schema-registry \
 --env EUREKA_HOST=eureka \
 --env ZIPKIN_HOST=zipkin \
 docker.mycompany.com/news-client:1.0.0
