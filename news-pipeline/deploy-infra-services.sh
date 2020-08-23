@@ -52,4 +52,4 @@ docker service create \
 --network my-swarm-net \
 --restart-condition="on-failure" \
 --publish 9411:9411 \
-openzipkin/zipkin:2.20.2
+openzipkin/zipkin:2.21.5

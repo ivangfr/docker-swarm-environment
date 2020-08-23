@@ -1,15 +1,15 @@
 # docker-swarm-environment
 ## `> news-pipeline`
 
-In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
+In this example, we are going to deploy, into a cluster of Docker Engines in swarm mode, the applications present in the repository [`spring-cloud-stream-kafka-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-kafka-elasticsearch)
 
 So, let's start a Docker Engines cluster in swarm mode as explained in the main [README](https://github.com/ivangfr/docker-swarm-environment#initializing-a-cluster-of-docker-engines-in-swarm-mode)
 
 ## Clone repository
 
-In a terminal, run the following command to clone [`spring-cloud-stream-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-elasticsearch)
+In a terminal, run the following command to clone [`spring-cloud-stream-kafka-elasticsearch`](https://github.com/ivangfr/spring-cloud-stream-kafka-elasticsearch)
 ```
-git clone https://github.com/ivangfr/spring-cloud-stream-elasticsearch.git
+git clone https://github.com/ivangfr/spring-cloud-stream-kafka-elasticsearch.git
 ```
 
 ## Prerequisite
@@ -21,7 +21,7 @@ git clone https://github.com/ivangfr/spring-cloud-stream-elasticsearch.git
 
 Instead of pushing the application's docker image to Docker Registry, we will simply build them using `manager1` and `worker1` Docker daemons. Below are the steps
 
-- In a terminal, navigate to `spring-cloud-stream-elasticsearch` root folder
+- In a terminal, navigate to `spring-cloud-stream-kafka-elasticsearch` root folder
 
 - Access `worker1` Docker Daemon
   ```
