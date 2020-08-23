@@ -8,7 +8,7 @@ docker service create \
 --publish 389:389 \
 --env LDAP_ORGANISATION="MyCompany Inc." \
 --env LDAP_DOMAIN=mycompany.com \
-osixia/openldap:1.3.0
+osixia/openldap:1.4.0
 
 docker service create \
 --name phpldapadmin-service \
@@ -29,7 +29,7 @@ docker service create \
 --env MYSQL_USER=keycloak \
 --env MYSQL_PASSWORD=password \
 --env MYSQL_ROOT_PASSWORD=root_password \
-mysql:5.7.30
+mysql:5.7.31
 
 docker service create \
 --name keycloak \
@@ -46,4 +46,4 @@ docker service create \
 --env JDBC_PARAMS=useSSL=false \
 --env JGROUPS_DISCOVERY_PROTOCOL=JDBC_PING \
 --env JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name=java:jboss/datasources/KeycloakDS \
-ivanfranchin/keycloak-clustered:10.0.2
+ivanfranchin/keycloak-clustered:11.0.1

@@ -151,7 +151,7 @@ Ivan Franchin > username: ifranchin, password: 123
   ./import-openldap-users.sh $(docker-machine ip manager1)
   ```
 
-> **Note:** The import of the users can also be done using `phpldapadmin` website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
+> **Note:** User import can also be done using `phpldapadmin` website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-phpldapadmin-website)
 
 ## Configure Keycloak
 
@@ -166,7 +166,7 @@ Ivan Franchin > username: ifranchin, password: 123
 
 - Copy `SIMPLE_SERVICE_CLIENT_SECRET` value that is shown at the end of the script. It will be needed whenever we call `Keycloak` to get a token to access `simple-service`
 
-> **Note:** The `Keycloak` configuration can also be done using its website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
+> **Note:** `Keycloak` configuration can also be done using its website as explained in [ivangfr/springboot-keycloak-openldap](https://github.com/ivangfr/springboot-keycloak-openldap#using-keycloak-website)
 
 ## Test
 
