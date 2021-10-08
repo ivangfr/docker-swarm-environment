@@ -12,9 +12,9 @@ The goal of this project is to have some examples deployed and running in a clus
 - [`Docker`](https://www.docker.com/)
 - [`docker-machine`](https://docs.docker.com/machine/overview/)
 
-## Initializing a cluster of docker engines in swarm mode
+## Initializing a cluster of Docker Engines in swarm mode
 
-In the following example, two Docker machines will be created. One will act as the **Manager (Leader)** and the another will be the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`. Those docker machines that will act as nodes in our Docker Swarm.
+In the following example, two Docker machines will be created. One will act as the **Manager (Leader)** and the another will be the **Worker**. The manager machine will be called `manager1` and the worker machine, `worker1`. Those docker machines will act as nodes in our Docker Swarm.
 
 The setup of the cluster can be done automatically or manually. All the commands below must be executed in a terminal.
 

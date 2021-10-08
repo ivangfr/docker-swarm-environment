@@ -30,7 +30,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
 
 - Build `simple-service` docker image
   ```
-  ./mvnw clean compile jib:dockerBuild --projects simple-service
+  ./docker-build.sh
   ```
 
 - Access `manager1` Docker Daemon
@@ -40,7 +40,7 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
    
 - Build again `simple-service` docker image
   ```
-  ./mvnw clean compile jib:dockerBuild --projects simple-service
+  ./docker-build.sh
   ```
 
 - Get back to Host machine Docker Daemon
@@ -62,18 +62,18 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
   ./deploy-infra-services.sh
   ```
 
-  We can list the status of the infrastructure services by running
+  We can list the infrastructure services by running
   ```
   docker service ls
   ```
 
   It will prompt something like
   ```
-  ID                  NAME                   MODE                REPLICAS            IMAGE                                    PORTS
-  vfyq79g15htf        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:10.0.2   *:8080->8080/tcp
-  it87nfuo7jd8        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                    *:389->389/tcp
-  tinqjr9fwjn5        mysql                  replicated          1/1                 mysql:5.7.30                             *:3306->3306/tcp
-  qil9rhadw94k        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                *:6443->443/tcp
+  ID             NAME           MODE         REPLICAS   IMAGE                                    PORTS
+  km6rz2s4moxn   keycloak       replicated   2/2        ivanfranchin/keycloak-clustered:latest   *:8080->8080/tcp
+  i0gsvwewcu31   mysql          replicated   1/1        mysql:5.7.35                             *:3306->3306/tcp
+  cy50h0n8fkkw   openldap       replicated   1/1        osixia/openldap:1.5.0                    *:389->389/tcp
+  96fc3q85cfht   phpldapadmin   replicated   1/1        osixia/phpldapadmin:0.9.0                *:6443->443/tcp
   ```
 
 - Once all infrastructure services are up and running, let's deploy `simple-service` application
@@ -81,19 +81,19 @@ Instead of pushing `simple-service` docker image to Docker Registry, we will sim
   ./deploy-app.sh
   ```
 
-  To list the status of the infrastructure services and `simple-service` application run
+  To list the infrastructure services and `simple-service` application run
   ```
   docker service ls
   ```
    
   You should see something like
   ```
-  ID                  NAME                   MODE                REPLICAS            IMAGE                                       PORTS
-  vfyq79g15htf        keycloak               replicated          2/2                 ivanfranchin/keycloak-clustered:10.0.2      *:8080->8080/tcp
-  it87nfuo7jd8        ldap-host              replicated          1/1                 osixia/openldap:1.3.0                       *:389->389/tcp
-  tinqjr9fwjn5        mysql                  replicated          1/1                 mysql:5.7.30                                *:3306->3306/tcp
-  qil9rhadw94k        phpldapadmin-service   replicated          1/1                 osixia/phpldapadmin:0.9.0                   *:6443->443/tcp
-  41xn7k500sti        simple-service         replicated          1/1                 docker.mycompany.com/simple-service:1.0.0   *:9080->8080/tcp
+  ID             NAME             MODE         REPLICAS   IMAGE                                    PORTS
+  km6rz2s4moxn   keycloak         replicated   2/2        ivanfranchin/keycloak-clustered:latest   *:8080->8080/tcp
+  i0gsvwewcu31   mysql            replicated   1/1        mysql:5.7.35                             *:3306->3306/tcp
+  cy50h0n8fkkw   openldap         replicated   1/1        osixia/openldap:1.5.0                    *:389->389/tcp
+  96fc3q85cfht   phpldapadmin     replicated   1/1        osixia/phpldapadmin:0.9.0                *:6443->443/tcp
+  s7lq3wz6e0as   simple-service   replicated   1/1        ivanfranchin/simple-service:1.0.0        *:9080->8080/tcp
   ```
 
 - \[Optional\] In order to see the `simple-service` initialization logs
@@ -262,7 +262,8 @@ Ivan Franchin > username: ifranchin, password: 123
 
 - Run the following scripts
   ```
-  ./remove-app.sh && ./remove-infra-services.sh
+  ./remove-app.sh
+  ./remove-infra-services.sh
   ```
   
 - Get back to Host machine Docker Daemon
