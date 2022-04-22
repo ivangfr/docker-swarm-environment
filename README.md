@@ -93,8 +93,8 @@ Open a terminal and follow the steps below
   It will prompt something like
   ```
   ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
-  n9hpc1g72uof84zl4c50k29uj *   manager1            Ready               Active              Leader              19.03.5
-  s26fcddx9mvlzxxxjp3ajqfbo     worker1             Ready               Active                                  19.03.5
+  60hh6m3rqqch60u7yza9lf6f5 *   manager1            Ready               Active              Leader              19.03.12
+  21urc24cgvwq6vjwuizy1bnar     worker1             Ready               Active                                  19.03.12
   ```
 
 - To see the current state and more information of the Swarm, run
@@ -113,7 +113,7 @@ Open a terminal and follow the steps below
     Paused: 0
     Stopped: 0
    Images: 0
-   Server Version: 19.03.5
+   Server Version: 19.03.12
    Storage Driver: overlay2
     Backing Filesystem: extfs
     Supports d_type: true
@@ -125,12 +125,12 @@ Open a terminal and follow the steps below
     Network: bridge host ipvlan macvlan null overlay
     Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
    Swarm: active
-    NodeID: n9hpc1g72uof84zl4c50k29uj
+    NodeID: 60hh6m3rqqch60u7yza9lf6f5
     Is Manager: true
-    ClusterID: yfd1byp5u7brdq6auyw3ffoym
+    ClusterID: ocflb0g33nrvh79n85lob6lhc
     Managers: 1
     Nodes: 2
-    Default Address Pool: 10.0.0.0/8  
+    Default Address Pool: 10.0.0.0/8
     SubnetSize: 24
     Data Path Port: 4789
     Orchestration:
@@ -147,26 +147,26 @@ Open a terminal and follow the steps below
      Force Rotate: 0
     Autolock Managers: false
     Root Rotation In Progress: false
-    Node Address: 192.168.99.108
+    Node Address: 192.168.99.120
     Manager Addresses:
-     192.168.99.108:2377
+     192.168.99.120:2377
    Runtimes: runc
    Default Runtime: runc
    Init Binary: docker-init
-   containerd version: b34a5c8af56e510852c35414db4c1f4fa6172339
-   runc version: 3e425f80a8c931f88e6d94a8c831b9d5aa481657
+   containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429
+   runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd
    init version: fec3683
    Security Options:
     seccomp
      Profile: default
-   Kernel Version: 4.14.154-boot2docker
-   Operating System: Boot2Docker 19.03.5 (TCL 10.1)
+   Kernel Version: 4.19.130-boot2docker
+   Operating System: Boot2Docker 19.03.12 (TCL 10.1)
    OSType: linux
    Architecture: x86_64
    CPUs: 1
-   Total Memory: 989.5MiB
+   Total Memory: 7.79GiB
    Name: manager1
-   ID: BFTO:X4FP:ZGWJ:WKDO:SA5T:MZAW:NLYP:D3YY:WCTP:7ZZU:NLR4:2HQU
+   ID: XAYV:H4TN:VI2S:D22T:PISE:G6QA:WMXJ:YKYB:QRBV:7ZXB:IRB3:XEM5
    Docker Root Dir: /mnt/sda1/var/lib/docker
    Debug Mode: false
    Registry: https://index.docker.io/v1/
@@ -184,4 +184,19 @@ Open a terminal and follow the steps below
 In a terminal, run the command below o remove `manager1` and `worker1` docker machines
 ```
 docker-machine rm worker1 manager1
+```
+
+## Issues
+
+Unable to upgrade this project because, while running `setup-docker-swarm.sh` script, I am getting the following error while creating `manager1` and `worker1`
+```
+Error creating machine: Error checking the host: Error checking and/or regenerating the certs: There was an error validating certificates for host "192.168.99.132:2376": dial tcp 192.168.99.132:2376: i/o timeout
+```
+
+Besides, after the script finishes, I cannot access docker-daemon from `manager1` and `worker1` machines
+```
+$ eval $(docker-machine env manager1)
+Error checking TLS connection: Error checking and/or regenerating the certs: There was an error validating certificates for host "192.168.99.131:2376": dial tcp 192.168.99.131:2376: i/o timeout
+You can attempt to regenerate them using 'docker-machine regenerate-certs [name]'.
+Be advised that this will trigger a Docker daemon restart which might stop running containers.
 ```
